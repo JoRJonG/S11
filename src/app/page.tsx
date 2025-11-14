@@ -61,8 +61,6 @@ type FormDataState = {
   currentWorkplace: string
   province: string
   level: string
-  yearsWorked: number | ''
-  monthsWorked: number | ''
   trainingPracticeYears: number | ''
   trainingPracticeMonths: number | ''
   startDate: string
@@ -83,8 +81,6 @@ type FormDataState = {
 
 const numericFieldNames = new Set<keyof FormDataState>([
   'startYear',
-  'yearsWorked',
-  'monthsWorked',
   'trainingPracticeYears',
   'trainingPracticeMonths',
   'amount',
@@ -315,8 +311,6 @@ export default function Home() {
     currentWorkplace: '',
     province: '',
     level: '',
-    yearsWorked: '',
-    monthsWorked: '',
     trainingPracticeYears: '',
     trainingPracticeMonths: '',
     startDate: '',
@@ -335,18 +329,6 @@ export default function Home() {
     trainingRhcEnd: '',
   })
   const [generated, setGenerated] = useState(false)
-
-  // Auto-calculate yearsWorked and monthsWorked from startDate and endDate
-  useEffect(() => {
-    if (formData.startDate && formData.endDate) {
-      const { years, months } = calculateDateDifference(formData.startDate, formData.endDate)
-      setFormData(prev => ({
-        ...prev,
-        yearsWorked: years,
-        monthsWorked: months
-      }))
-    }
-  }, [formData.startDate, formData.endDate])
 
   const updateThaiDateField = (
     field: 'startDate' | 'endDate',
@@ -403,14 +385,7 @@ export default function Home() {
     ? formData.startMonth
     : months[0]
   const monthsData = getNext12MonthsWithYear(resolvedStartMonth, resolvedStartYear)
-  const yearsWorkedValue =
-    typeof formData.yearsWorked === 'number' && Number.isFinite(formData.yearsWorked)
-      ? formData.yearsWorked
-      : 0
-  const monthsWorkedValue =
-    typeof formData.monthsWorked === 'number' && Number.isFinite(formData.monthsWorked)
-      ? formData.monthsWorked
-      : 0
+  const { years: yearsWorkedValue, months: monthsWorkedValue } = calculateDateDifference(formData.startDate, formData.endDate)
   const trainingPracticeYearsValue =
     typeof formData.trainingPracticeYears === 'number' &&
     Number.isFinite(formData.trainingPracticeYears)
@@ -663,31 +638,7 @@ export default function Home() {
                 <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b-2 border-blue-200">
                   ข้อมูลการปฏิบัติงาน
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">ปฏิบัติงาน (ปี)</label>
-                    <input
-                      type="number"
-                      name="yearsWorked"
-                      value={formData.yearsWorked}
-                      onChange={handleInputChange}
-                      placeholder="เช่น 5"
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">เดือน</label>
-                    <input
-                      type="number"
-                      name="monthsWorked"
-                      value={formData.monthsWorked}
-                      onChange={handleInputChange}
-                      placeholder="เช่น 6"
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                      required
-                    />
-                  </div>
+                <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">จำนวนเงิน (บาท)</label>
                     <input
