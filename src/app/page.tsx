@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const months = [
   'มกราคม',
@@ -274,6 +274,39 @@ const getNext12MonthsWithYear = (startMonth: string, startYear: number) => {
   return data
 }
 
+const calculateDateDifference = (startDate: string, endDate: string): { years: number; months: number } => {
+  if (!startDate || !endDate) {
+    return { years: 0, months: 0 }
+  }
+
+  const start = new Date(startDate)
+  const end = new Date(endDate)
+
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+    return { years: 0, months: 0 }
+  }
+
+  let years = end.getFullYear() - start.getFullYear()
+  let months = end.getMonth() - start.getMonth()
+
+  // Adjust if end day is before start day in the month
+  if (end.getDate() < start.getDate()) {
+    months--
+  }
+
+  // Adjust negative months
+  if (months < 0) {
+    years--
+    months += 12
+  }
+
+  // Ensure non-negative values
+  years = Math.max(0, years)
+  months = Math.max(0, months)
+
+  return { years, months }
+}
+
 export default function Home() {
   const [formData, setFormData] = useState<FormDataState>({
     name: '',
@@ -302,6 +335,18 @@ export default function Home() {
     trainingRhcEnd: '',
   })
   const [generated, setGenerated] = useState(false)
+
+  // Auto-calculate yearsWorked and monthsWorked from startDate and endDate
+  useEffect(() => {
+    if (formData.startDate && formData.endDate) {
+      const { years, months } = calculateDateDifference(formData.startDate, formData.endDate)
+      setFormData(prev => ({
+        ...prev,
+        yearsWorked: years,
+        monthsWorked: months
+      }))
+    }
+  }, [formData.startDate, formData.endDate])
 
   const updateThaiDateField = (
     field: 'startDate' | 'endDate',
@@ -513,7 +558,7 @@ export default function Home() {
               </p>
             </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); setGenerated(true) }} className="px-6 sm:px-8 py-8 space-y-6">
+            <form onSubmit={(e) => { e.preventDefault(); setGenerated(true); window.scrollTo(0, 0) }} className="px-6 sm:px-8 py-8 space-y-6">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b-2 border-blue-200">
                   ข้อมูลส่วนตัว
@@ -705,7 +750,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">วันที่สิ้นสุด</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">ถึงวันที่</label>
                     <div className="grid grid-cols-3 gap-2">
                       <select
                         value={formData.endDate ? String(endDateParts.day) : ''}
