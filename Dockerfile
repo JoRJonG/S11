@@ -6,7 +6,7 @@ WORKDIR /app
 
 # คัดลอก package.json และติดตั้ง dependencies
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 # คัดลอกโค้ดทั้งหมด
 COPY . .
