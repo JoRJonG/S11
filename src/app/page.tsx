@@ -1100,7 +1100,7 @@ export default function Home() {
                 minHeight: '297mm',
                 padding: '22mm',
                 fontFamily: '"TH SarabunPSK", "Sarabun", "Leelawadee UI", "Tahoma", "Times New Roman", serif',
-                fontSize: '14pt',
+                fontSize: '12pt',
                 lineHeight: '1.45',
                 color: '#111',
                 boxSizing: 'border-box',
