@@ -1098,7 +1098,7 @@ export default function Home() {
               style={{
                 width: '210mm',
                 minHeight: '297mm',
-                padding: '25mm 22mm 15mm 22mm',
+                padding: '22mm',
                 fontFamily: '"TH SarabunPSK", "Sarabun", "Leelawadee UI", "Tahoma", "Times New Roman", serif',
                 fontSize: '14pt',
                 lineHeight: '1.45',
